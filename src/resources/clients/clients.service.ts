@@ -37,7 +37,7 @@ export class ClientsService {
         {lastName: {$regex: `^${keyword}.*`, $options: options}},
         {company: {$regex: `^${keyword}.*`, $options: options}},
         {phone: {$regex: `^${keyword}.*`, $options: options}}
-      ]}
+      ]}  
     }
       const clients = await this.clientModel.find(filter)
       return clients
