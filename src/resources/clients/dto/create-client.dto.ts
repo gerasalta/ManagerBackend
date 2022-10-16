@@ -1,4 +1,4 @@
-import { IsOptional, MinLength, IsInt, IsPositive, IsString, IsNotEmpty, ValidateIf } from "class-validator";
+import { IsOptional, MinLength, IsInt, IsPositive, IsString } from "class-validator";
 
 
 
@@ -14,13 +14,15 @@ export class CreateClientDto {
     
     @IsInt()
     @IsPositive()
-    phone: number;
+    phone: string;
     
     @IsOptional()
     @IsString()
+    @MinLength(3)
     address: string;
     
     @IsOptional()
+    @MinLength(1)
     @IsString()
     company: string;
 

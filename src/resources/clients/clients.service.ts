@@ -17,20 +17,30 @@ export class ClientsService {
   async create(createClientDto: CreateClientDto) {
     try{
       const client = await this.clientModel.create(createClientDto)
-      return client
+      return {hasError: false, message: "client has been created successfully", data: client}
     }
     catch(err){
       if(err.code === 11000){
-      console.log(err)
-        throw new BadRequestException(`the value already exists in the database: ${JSON.stringify(err.keyValue)}`)
+        throw new BadRequestException({hasError: true, message: `the value already exists in the database: ${JSON.stringify(err.keyValue)}`})
       }
-      throw new InternalServerErrorException('Can not create client')
+      throw new InternalServerErrorException({hasError: true, message: `internal server error`})
     }
   }
 
-  async findAll() {
-    const clients = await this.clientModel.find() 
-    return clients
+  async findAll(queryParameters) {
+    let filter = {}
+    const keyword = queryParameters.keyword
+    const options = 'i'
+    if(keyword){
+      filter = {$or: [
+        {name: {$regex: `^${keyword}.*`, $options: options}},
+        {lastName: {$regex: `^${keyword}.*`, $options: options}},
+        {company: {$regex: `^${keyword}.*`, $options: options}},
+        {phone: {$regex: `^${keyword}.*`, $options: options}}
+      ]}
+    }
+      const clients = await this.clientModel.find(filter)
+      return clients
   }
 
   async findOne(id: string) {

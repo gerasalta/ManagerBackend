@@ -16,10 +16,10 @@ export class Client extends Document {
     lastName: string;
 
     @Prop({
-        unique: true,
         index: true,
+        unique: true,
     })
-    phone: number;
+    phone: string;
 
     @Prop({
         index: true,
@@ -28,6 +28,7 @@ export class Client extends Document {
     address: string;
 
     @Prop({
+        index: true,
         default: 'none'
     })
     company: string;
@@ -36,3 +37,4 @@ export class Client extends Document {
 
 export const ClientSchema = SchemaFactory.createForClass( Client )
 ClientSchema.set('timestamps', true)
+ClientSchema.set('autoIndex', true)
