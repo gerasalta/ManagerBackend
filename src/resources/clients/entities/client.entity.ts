@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document } from "mongoose";
+const aggregatePaginate = require('mongoose-aggregate-paginate-v2');
 
 @Schema()
 export class Client extends Document {
@@ -36,5 +37,6 @@ export class Client extends Document {
 
 
 export const ClientSchema = SchemaFactory.createForClass( Client )
+ClientSchema.plugin(aggregatePaginate)
 ClientSchema.set('timestamps', true)
 ClientSchema.set('autoIndex', true)

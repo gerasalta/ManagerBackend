@@ -1,4 +1,4 @@
-import { BadRequestException, HttpCode, HttpStatus, Injectable, InternalServerErrorException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateClientDto } from './dto/create-client.dto';
@@ -11,19 +11,20 @@ export class ClientsService {
 
   constructor(
     @InjectModel(Client.name)
-    private readonly clientModel: Model<Client>) {
+    private readonly clientModel: Model<Client>)
+    {
   }
 
   async create(createClientDto: CreateClientDto) {
-    try{
+    try {
       const client = await this.clientModel.create(createClientDto)
-      return {hasError: false, message: "client has been created successfully", data: client}
+      return { hasError: false, message: "client has been created successfully", data: client }
     }
-    catch(err){
-      if(err.code === 11000){
-        throw new BadRequestException({hasError: true, message: `the value already exists in the database: ${JSON.stringify(err.keyValue)}`})
+    catch (err) {
+      if (err.code === 11000) {
+        throw new BadRequestException({ hasError: true, message: `the value already exists in the database: ${JSON.stringify(err.keyValue)}` })
       }
-      throw new InternalServerErrorException({hasError: true, message: `internal server error`})
+      throw new InternalServerErrorException({ hasError: true, message: `internal server error` })
     }
   }
 
@@ -31,16 +32,25 @@ export class ClientsService {
     let filter = {}
     const keyword = queryParameters.keyword
     const options = 'i'
-    if(keyword){
-      filter = {$or: [
-        {name: {$regex: `^${keyword}.*`, $options: options}},
-        {lastName: {$regex: `^${keyword}.*`, $options: options}},
-        {company: {$regex: `^${keyword}.*`, $options: options}},
-        {phone: {$regex: `^${keyword}.*`, $options: options}}
-      ]}  
+    const regex = `${keyword}.*`
+    if (keyword) {
+      filter = {
+        $or: [
+          { fullName: { $regex: regex, $options: options } },
+          { fullNameInv: { $regex: regex, $options: options } },
+          { company: { $regex: regex, $options: options } },
+          { phone: { $regex: regex, $options: options } }
+        ]
+      }
     }
-      const clients = await this.clientModel.find(filter)
-      return clients
+    const clients = await this.clientModel.aggregate([
+      { $addFields: { "fullName": { $concat: ["$name", " ", "$lastName"] } } },
+      { $addFields: { "fullNameInv": { $concat: ["$lastName", " ", "$name"] } } },
+      { $match: { $and: [filter] }},
+      { $unset: ['fullName', 'fullNameInv', '__v']}
+    ])
+
+    return clients
   }
 
   async findOne(id: string) {
