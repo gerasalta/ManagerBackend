@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { AggregatePaginateModel, Model } from 'mongoose';
 import { CreateClientDto } from './dto/create-client.dto';
 import { UpdateClientDto } from './dto/update-client.dto';
 import { Client } from './entities/client.entity';
@@ -11,8 +11,10 @@ export class ClientsService {
 
   constructor(
     @InjectModel(Client.name)
-    private readonly clientModel: Model<Client>)
-    {
+    private readonly clientModel: Model<Client>,
+    @InjectModel(Client.name)
+    private readonly paginateModel: AggregatePaginateModel<Client>
+  ) {
   }
 
   async create(createClientDto: CreateClientDto) {
@@ -28,29 +30,38 @@ export class ClientsService {
     }
   }
 
-  async findAll(queryParameters) {
+  findAll(queryParameters) {
+
     let filter = {}
-    const keyword = queryParameters.keyword
-    const options = 'i'
+    const {keyword, limit, sort, page} = queryParameters
     const regex = `${keyword}.*`
+    const regexOptions = 'i'
+    const paginateOptions = {
+      page: page || 1,
+      limit: limit || 10,
+      sort: sort || '-updatedAt'
+    }
+
     if (keyword) {
       filter = {
         $or: [
-          { fullName: { $regex: regex, $options: options } },
-          { fullNameInv: { $regex: regex, $options: options } },
-          { company: { $regex: regex, $options: options } },
-          { phone: { $regex: regex, $options: options } }
+          { fullName: { $regex: regex, $options: regexOptions } },
+          { fullNameInv: { $regex: regex, $options: regexOptions } },
+          { company: { $regex: regex, $options: regexOptions } },
+          { phone: { $regex: regex, $options: regexOptions } }
         ]
       }
     }
-    const clients = await this.clientModel.aggregate([
+
+    let clients = this.paginateModel.aggregate([
       { $addFields: { "fullName": { $concat: ["$name", " ", "$lastName"] } } },
       { $addFields: { "fullNameInv": { $concat: ["$lastName", " ", "$name"] } } },
-      { $match: { $and: [filter] }},
-      { $unset: ['fullName', 'fullNameInv', '__v']}
+      { $match: { $and: [filter] } },
+      { $unset: ['fullName', 'fullNameInv', '__v'] }
     ])
 
-    return clients
+    let paginatedClients = this.paginateModel.aggregatePaginate(clients, paginateOptions)
+    return paginatedClients
   }
 
   async findOne(id: string) {
