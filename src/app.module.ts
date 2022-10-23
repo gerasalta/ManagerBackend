@@ -6,6 +6,7 @@ import { join } from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ClientsModule } from './resources/clients/clients.module';
+import { CommonModule } from './common/common.module';
 
 @Module({
   imports: [
@@ -13,7 +14,8 @@ import { ClientsModule } from './resources/clients/clients.module';
       rootPath: join(__dirname, '..', 'public'),
     }),
     MongooseModule.forRoot('mongodb+srv://fcgrafica:alvarado1010_salta@cluster0.uhxshq1.mongodb.net/grafica?retryWrites=true&w=majority'),
-    ClientsModule
+    ClientsModule,
+    CommonModule
   ],
   controllers: [AppController],
   providers: [AppService],

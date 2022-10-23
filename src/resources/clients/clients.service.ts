@@ -14,8 +14,7 @@ export class ClientsService {
     private readonly clientModel: Model<Client>,
     @InjectModel(Client.name)
     private readonly paginateModel: AggregatePaginateModel<Client>
-  ) {
-  }
+  ) {}
 
   async create(createClientDto: CreateClientDto) {
     try {
@@ -31,9 +30,8 @@ export class ClientsService {
   }
 
   findAll(queryParameters) {
-
     let filter = {}
-    const {keyword, limit, sort, page} = queryParameters
+    const { keyword, limit, sort, page } = queryParameters
     const regex = `${keyword}.*`
     const regexOptions = 'i'
     const paginateOptions = {
@@ -41,7 +39,6 @@ export class ClientsService {
       limit: limit || 10,
       sort: sort || '-updatedAt'
     }
-
     if (keyword) {
       filter = {
         $or: [
@@ -52,12 +49,11 @@ export class ClientsService {
         ]
       }
     }
-
     let clients = this.paginateModel.aggregate([
       { $addFields: { "fullName": { $concat: ["$name", " ", "$lastName"] } } },
       { $addFields: { "fullNameInv": { $concat: ["$lastName", " ", "$name"] } } },
       { $match: { $and: [filter] } },
-      { $unset: ['fullName', 'fullNameInv', '__v'] }
+      { $unset: ['fullName', 'fullNameInv'] }
     ])
 
     let paginatedClients = this.paginateModel.aggregatePaginate(clients, paginateOptions)
@@ -66,17 +62,34 @@ export class ClientsService {
 
   async findOne(id: string) {
     const client = await this.clientModel.findById(id)
-    return client;
+    if (!client) {
+      throw new BadRequestException({ hasError: true, message: `id:'${id}' not found` })
+    }
+    return { hasError: false, message: "client has been found successfully", data: client };
   }
 
   async update(id: string, updateClientDto: UpdateClientDto) {
-    const client = await this.clientModel.findByIdAndUpdate(id, updateClientDto)
-    return client;
+    try{
+      const client = await this.clientModel.findByIdAndUpdate(id, updateClientDto, {new: true})
+      if(!client){
+        throw new BadRequestException({hasError: true, message: `id:'${id}' not found`})
+      }
+      return {hasError: false, message: "client has been updated successfully", data: client}
+    }
+    catch (err) {
+      if (err.code === 11000) {
+        throw new BadRequestException({ hasError: true, message: `the value already exists in the database: ${JSON.stringify(err.keyValue)}` })
+      }
+      throw new InternalServerErrorException({ hasError: true, message: `internal server error` })
+    }
   }
 
   async remove(id: string) {
     const client = await this.clientModel.findByIdAndDelete(id)
-    return client;
+    if(!client){
+      throw new BadRequestException({hasError: true, message: `id:'${id}' not found`})
+    }
+    return {hasError: false, message: "client has been removed successfully"}
   }
 
 }

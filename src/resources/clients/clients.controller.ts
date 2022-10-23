@@ -1,5 +1,6 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
-import { query } from 'express';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';  
+import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { ParseMongoIdPipe } from 'src/common/pipes/parse-mongo-id.pipe';
 import { ClientsService } from './clients.service';
 import { CreateClientDto } from './dto/create-client.dto';
 import { UpdateClientDto } from './dto/update-client.dto';
@@ -14,22 +15,22 @@ export class ClientsController {
   }
 
   @Get()
-  findAll(@Query() queryParameters) {
-    return this.clientsService.findAll(queryParameters);
+  findAll(@Query() PaginationDto: PaginationDto) {
+    return this.clientsService.findAll(PaginationDto);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
+  @Get(':id') 
+  findOne(@Param('id', ParseMongoIdPipe) id: string) {
     return this.clientsService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateClientDto: UpdateClientDto) {
+  update(@Param('id', ParseMongoIdPipe) id: string, @Body() updateClientDto: UpdateClientDto) {
     return this.clientsService.update(id, updateClientDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id', ParseMongoIdPipe) id: string) {
     return this.clientsService.remove(id);
   }
 }
