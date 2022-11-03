@@ -7,6 +7,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ClientsModule } from './resources/clients/clients.module';
 import { CommonModule } from './common/common.module';
+import { NotesModule } from './resources/notes/notes.module';
 
 @Module({
   imports: [
@@ -15,7 +16,8 @@ import { CommonModule } from './common/common.module';
     }),
     MongooseModule.forRoot('mongodb+srv://fcgrafica:alvarado1010_salta@cluster0.uhxshq1.mongodb.net/grafica?retryWrites=true&w=majority'),
     ClientsModule,
-    CommonModule
+    CommonModule,
+    NotesModule
   ],
   controllers: [AppController],
   providers: [AppService],
