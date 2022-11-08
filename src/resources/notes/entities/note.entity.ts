@@ -1,42 +1,7 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { Document, Schema as MongooseSchema, SchemaTypes, Types  } from 'mongoose';
-
-
-@Schema()
-class Orders {
-
-    @Prop({
-        required: true,
-        type: String
-    })
-    title: string;
-
-    @Prop({
-        required: true,
-        type: Number
-    })
-    price: number;
-
-    @Prop({
-        required: true,
-        type: String
-    })
-    description: string;
-    
-}
-
-@Schema()
-export class Advances extends Document {
-
-    @Prop({
-        required: true,
-        type: Number,
-    })
-    advance: number;
-
-}
-
-export const AdvancesSchema = SchemaFactory.createForClass(Advances);
+import { Document, Schema as MongooseSchema } from 'mongoose';
+import { Advances, AdvancesSchema } from "./advances.entitiy";
+import { Orders, OrdersSchema } from "./orders.entity";
 
 
 @Schema({timestamps: true})
@@ -49,19 +14,18 @@ export class Note extends Document{
     clientId: string;
 
     @Prop({
-        type: MongooseSchema.Types.Array,
-        _id: true
+        type: [OrdersSchema],
     })
     orders: Orders[]
 
     @Prop({
-        type: MongooseSchema.Types.Array
-    })
+         type: [AdvancesSchema] 
+        })
     advances: Advances[];
 
     @Prop({
         required: true,
-        type: Number
+        type: Number,
     })
     discount: number
 
