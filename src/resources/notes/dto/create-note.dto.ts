@@ -1,4 +1,5 @@
-import { ArrayMinSize, IsArray, IsDate, IsInt, IsString, ValidateNested } from "class-validator";
+import { ArrayMinSize, IsArray, IsDate, IsInt, IsMongoId, IsString, ValidateNested } from "class-validator";
+import { ObjectId } from "mongoose";
 
 class Orders{
 
@@ -40,5 +41,8 @@ export class CreateNoteDto {
 
     @IsDate()
     term: Date
+
+    @IsString()
+    manager: string
 
 }

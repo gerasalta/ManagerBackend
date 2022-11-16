@@ -63,7 +63,7 @@ export class ClientsService {
   async findOne(id: string) {
     const client = await this.clientModel.findById(id)
     if (!client) {
-      throw new BadRequestException({ hasError: true, message: `id:'${id}' not found` })
+      throw new BadRequestException({ hasError: true, message: `client with id:'${id}' not found` })
     }
     return { hasError: false, message: "client has been found successfully", data: client };
   }

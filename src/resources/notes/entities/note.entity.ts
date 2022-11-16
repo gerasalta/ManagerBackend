@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Schema as MongooseSchema } from 'mongoose';
 import { Advances, AdvancesSchema } from "./advances.entitiy";
 import { Orders, OrdersSchema } from "./orders.entity";
+const aggregatePaginate = require('mongoose-aggregate-paginate-v2');
 
 
 @Schema({timestamps: true})
@@ -12,16 +13,6 @@ export class Note extends Document{
         type: String
     })
     clientId: string;
-
-    @Prop({
-        type: [OrdersSchema],
-    })
-    orders: Orders[]
-
-    @Prop({
-         type: [AdvancesSchema] 
-        })
-    advances: Advances[];
 
     @Prop({
         required: true,
@@ -35,6 +26,25 @@ export class Note extends Document{
     })
     term: Date
 
+    @Prop({
+        required: true,
+        type: String
+    })
+    manager: string
+
+    @Prop({
+        type: [OrdersSchema],
+    })
+    orders: Orders[]
+
+    @Prop({
+         type: [AdvancesSchema] 
+        })
+    advances: Advances[];
+
+
 }
 
 export const NoteSchema = SchemaFactory.createForClass(Note);
+NoteSchema.plugin(aggregatePaginate)
+NoteSchema.set('timestamps', true)
