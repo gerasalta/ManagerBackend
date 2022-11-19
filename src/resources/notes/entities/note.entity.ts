@@ -47,4 +47,4 @@ export class Note extends Document{
 
 export const NoteSchema = SchemaFactory.createForClass(Note);
 NoteSchema.plugin(aggregatePaginate)
-NoteSchema.set('timestamps', true)
+NoteSchema.set('versionKey', false)

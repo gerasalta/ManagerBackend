@@ -14,4 +14,5 @@ export class Advances extends Document {
 }
 
 export const AdvancesSchema = SchemaFactory.createForClass(Advances);
-AdvancesSchema.plugin(aggregatePaginate)
+AdvancesSchema.plugin(aggregatePaginate);
+AdvancesSchema.set('versionKey', false)

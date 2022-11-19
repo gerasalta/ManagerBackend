@@ -35,3 +35,4 @@ export class Client extends Document {
 export const ClientSchema = SchemaFactory.createForClass( Client )
 ClientSchema.plugin(aggregatePaginate)
 ClientSchema.set('timestamps', true)
+ClientSchema.set('versionKey', false)

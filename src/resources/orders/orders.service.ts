@@ -14,39 +14,36 @@ export class OrdersService {
   ) { }
 
   create(createOrderDto: CreateOrderDto) {
-    return 'This action adds a new order';
+    return 'orders only can be created from /notes';
   }
 
   findAll() {
-    return `This action returns all orders`;
+    return `use notes/id for get the orders list`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} order`;
+  async findOne(id: string) {
+    const orders = await this.noteModel.findById(id)
+    if(!orders){
+      throw new BadRequestException({ hasError: true, message: `order with id:'${id}' not found` })
+    }
+    return { hasError: false, message: "order has been deleted successfully", orders: orders.orders};
   }
 
   update(id: number, updateOrderDto: UpdateOrderDto) {
-    return `This action updates a #${id} order`;
+    return `orders cant be updated`;
   }
 
   async remove(id: string) {
-
-    const order = await this.noteModel.updateMany(
+    const orderDeleted = await this.noteModel.updateMany(
       {},
-      {$pull: {
-        orders: {
-          _id: id
-        }
-      }},
       {
-        multi: true
+        $pull: {
+          orders: {
+            _id: id
+          }
+        }
       }
     )
-
-    if(!order){
-      throw new BadRequestException({ hasError: true, message: `order with id:'${id}' not found` })
-    }
-
-    return order
+    return { hasError: false, message: "order has been deleted successfully",  orderDeleted};
   }
 }

@@ -26,3 +26,4 @@ export class Orders extends Document{
 }
 
 export const OrdersSchema = SchemaFactory.createForClass(Orders);
+OrdersSchema.set('versionKey', false)

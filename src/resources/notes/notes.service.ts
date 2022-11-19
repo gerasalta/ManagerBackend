@@ -96,7 +96,7 @@ export class NotesService {
   }
 
   update(id: number, updateNoteDto: UpdateNoteDto) {
-    return `notes cant not be updated`;
+    return `notes cant be updated`;
   }
 
   async remove(id: string) {
