@@ -9,6 +9,7 @@ import { ClientsModule } from './resources/clients/clients.module';
 import { CommonModule } from './common/common.module';
 import { NotesModule } from './resources/notes/notes.module';
 import { OrdersModule } from './resources/orders/orders.module';
+import { AdvancesModule } from './resources/advances/advances.module';
 
 @Module({
   imports: [
@@ -19,7 +20,8 @@ import { OrdersModule } from './resources/orders/orders.module';
     ClientsModule,
     CommonModule,
     NotesModule,
-    OrdersModule
+    OrdersModule,
+    AdvancesModule
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,5 +1,4 @@
-import { ArrayMinSize, IsArray, IsDate, IsInt, IsMongoId, IsString, ValidateNested } from "class-validator";
-import { ObjectId } from "mongoose";
+import { ArrayMinSize, IsArray, IsDate, IsInt, IsString, ValidateNested } from "class-validator";
 
 class Orders{
 

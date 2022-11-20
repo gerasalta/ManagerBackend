@@ -14,7 +14,7 @@ export class OrdersService {
   ) { }
 
   create(createOrderDto: CreateOrderDto) {
-    return 'orders only can be created from /notes';
+    return 'orders only can be created from/notes';
   }
 
   findAll() {
@@ -26,7 +26,7 @@ export class OrdersService {
     if(!orders){
       throw new BadRequestException({ hasError: true, message: `order with id:'${id}' not found` })
     }
-    return { hasError: false, message: "order has been deleted successfully", orders: orders.orders};
+    return { hasError: false, message: "order has been deleted successfully", orders: orders.orders };
   }
 
   update(id: number, updateOrderDto: UpdateOrderDto) {
