@@ -32,7 +32,7 @@ export class AdvancesController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.advancesService.remove(+id);
+  remove(@Param('id', ParseMongoIdPipe) id: string) {
+    return this.advancesService.remove(id);
   }
 }

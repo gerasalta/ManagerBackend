@@ -18,32 +18,32 @@ export class OrdersService {
   }
 
   findAll() {
-    return `use notes/id for get the orders list`;
+    return `use orders/id for get an orders list from specific note`;
   }
 
   async findOne(id: string) {
-    const orders = await this.noteModel.findById(id)
-    if(!orders){
+    const data = await this.noteModel.findById(id)
+    if (!data) {
       throw new BadRequestException({ hasError: true, message: `order with id:'${id}' not found` })
     }
-    return { hasError: false, message: "order has been deleted successfully", orders: orders.orders };
+    return { hasError: false, message: "order has been deleted successfully", orders: data.orders };
   }
 
-  update(id: number, updateOrderDto: UpdateOrderDto) {
+  update( ) {
     return `orders cant be updated`;
   }
 
   async remove(id: string) {
-    const orderDeleted = await this.noteModel.updateMany(
-      {},
-      {
-        $pull: {
-          orders: {
-            _id: id
-          }
-        }
-      }
+    const data = await this.noteModel.findOneAndUpdate(
+      { 'orders._id': id },
+      { $pull: { orders: { _id: id } } },
+      { new: true }
     )
-    return { hasError: false, message: "order has been deleted successfully",  orderDeleted};
+
+    if (!data) {
+      throw new BadRequestException({ hasError: true, message: `order with id:'${id}' not found` })
+    }
+
+    return { hasError: false, message: "order has been deleted successfully", data: data.orders };
   }
 }

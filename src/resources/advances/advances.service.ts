@@ -18,7 +18,7 @@ export class AdvancesService {
   }
 
   findAll() {
-    return `use advances/id for get the advances`;
+    return `use advances/id for get an advances list from specific note`;
   }
 
   async findOne(id: string) {
@@ -29,7 +29,7 @@ export class AdvancesService {
       { $addFields: { subtotal: { $sum: '$orders.price' } } },
       { $addFields: { total: { $subtract: ['$subtotal', '$discount'] } } },
       { $addFields: { totalAdvances: { $sum: '$advances.advance' } } },
-      { $addFields: { balance: { $subtract: ['$total', '$totalAdvances' ] }} },
+      { $addFields: { balance: { $subtract: ['$total', '$totalAdvances'] } } },
       {
         $project: {
           _id: 0,
@@ -45,7 +45,7 @@ export class AdvancesService {
     ])
 
     if (!data.length) {
-      throw new BadRequestException({ hasError: true, message: `note with id:'${id}' not found` })
+      throw new BadRequestException({ hasError: true, message: `advance with id:'${id}' not found` })
     }
 
     return { hasError: false, message: "advances has been found successfully", data: data };
@@ -55,17 +55,30 @@ export class AdvancesService {
   async update(id: string, updateAdvanceDto: UpdateAdvanceDto) {
 
     const data = await this.noteModel.findOneAndUpdate(
-      {_id: id},
-      { $push: { advances: updateAdvanceDto}},
-      { new: true}
-      )
+      { _id: id },
+      { $push: { advances: updateAdvanceDto } },
+      { new: true }
+    )
 
-    
+    if (!data) {
+      throw new BadRequestException({ hasError: true, message: `note with id:'${id}' not found` })
+    }
 
     return { hasError: false, message: "advances has been added successfully", data: data };
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} advance`;
+  async remove(id: string) {
+
+    const data = await this.noteModel.findOneAndUpdate(
+      {  'advances._id': id},
+      { $pull: { advances: { _id: id } } },
+      { new: true }
+    )
+
+    if (!data){
+      throw new BadRequestException({ hasError: true, message: `advances with id:'${id}' not found` })
+    }
+
+    return { hasError: false, message: "advance has been deleted successfully", data: data.advances };
   }
 }
