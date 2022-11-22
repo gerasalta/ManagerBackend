@@ -70,12 +70,12 @@ export class AdvancesService {
   async remove(id: string) {
 
     const data = await this.noteModel.findOneAndUpdate(
-      {  'advances._id': id},
+      { 'advances._id': id },
       { $pull: { advances: { _id: id } } },
       { new: true }
     )
 
-    if (!data){
+    if (!data) {
       throw new BadRequestException({ hasError: true, message: `advances with id:'${id}' not found` })
     }
 
