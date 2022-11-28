@@ -1,4 +1,4 @@
-import { IsInt, IsOptional, IsPositive, IsString, Min } from "class-validator";
+import { IsBoolean, IsInt, IsOptional, IsPositive, IsString, Min } from "class-validator";
 
 
 export class PaginationDto{
@@ -22,5 +22,9 @@ export class PaginationDto{
     @IsString()
     @IsOptional()
     keyword: string;
+
+    @IsBoolean()
+    @IsOptional()
+    complete: boolean
 
 }

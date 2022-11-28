@@ -23,7 +23,7 @@ export class ClientsService {
     }
     catch (err) {
       if (err.code === 11000) {
-        throw new BadRequestException({ hasError: true, message: `the value already exists in the database: ${JSON.stringify(err.keyValue)}` })
+        throw new BadRequestException({ hasError: true, message: `the value already exists in the client collection: ${JSON.stringify(err.keyValue)}` })
       }
       throw new InternalServerErrorException({ hasError: true, message: `internal server error` })
     }

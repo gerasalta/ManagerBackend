@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Schema as MongooseSchema } from 'mongoose';
+import { type } from "os";
 import { Advances, AdvancesSchema } from "./advances.entitiy";
 import { Orders, OrdersSchema } from "./orders.entity";
 const aggregatePaginate = require('mongoose-aggregate-paginate-v2');
@@ -43,6 +44,11 @@ export class Note extends Document{
         })
     advances: Advances[];
 
+    @Prop({
+        type: Boolean,
+        default: false
+    })
+    complete: boolean
 
 }
 

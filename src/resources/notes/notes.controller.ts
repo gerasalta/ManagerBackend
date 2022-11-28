@@ -24,12 +24,14 @@ export class NotesController {
     return this.notesService.findOne(id);
   }
 
+  @Patch(':id/complete')
+  complete( @Param('id', ParseMongoIdPipe) id: string   ) {
+    return this.notesService.complete(id);
+  }
+
   @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateNoteDto: UpdateNoteDto
-  ) {
-    return this.notesService.update(+id, updateNoteDto);
+  update( @Param('id') id: string ) {
+    return this.notesService.update(id);
   }
 
   @Delete(':id')

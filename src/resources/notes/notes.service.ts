@@ -28,6 +28,7 @@ export class NotesService {
   async findAll(queryParameters) {
     let filter = {}
     const { keyword, limit, sort, page } = queryParameters
+    const complete = queryParameters.complete || false
     const regex = `${keyword}.*`
     const regexOptions = 'i'
     if (keyword) {
@@ -65,20 +66,22 @@ export class NotesService {
       { $addFields: { "company": '$client.company' } },
       {
         $match: {
-          $or: [
-            filter
+          $and: [
+            filter,
+            {complete: complete}
           ]
         }
       },
       {
-        $unset: [
-          'clientId',
-          'clientIdConverted',
-          'fullNameInv',
-          'fullName',
-          'phone',
-          'company'
-        ]
+        $project: {
+          clientId: 0,
+          clientIdConverted: 0,
+          fullNameInv: 0,
+          fullName: 0,
+          phone: 0,
+          company: 0
+        }
+
       }
     ])
 
@@ -95,8 +98,18 @@ export class NotesService {
     return { hasError: false, message: "note has been found successfully", data: order };
   }
 
-  update(id: number, updateNoteDto: UpdateNoteDto) {
-    return `notes cant be updated`;
+  async complete(id: string) {
+    const complete = await this.noteModel.findByIdAndUpdate(id, [{$set: {complete: true}}], {new: true})
+    
+    if(!complete){
+      throw new BadRequestException({ hasError: true, message: `note with id:'${id}' not found` })
+    }
+
+    return { hasError: false, message: "note has been completed successfully", data: complete };
+  }
+
+  async update(id: string) {
+    return { hasError: true, message: "cant update notes"};
   }
 
   async remove(id: string) {
