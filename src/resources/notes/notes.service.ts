@@ -42,12 +42,7 @@ export class NotesService {
       }
     }
 
-    const paginateOptions = {
-      page: page || 1,
-      limit: limit || 10,
-      sort: sort || '-updatedAt'
-    }
-    let notes = this.noteModel.aggregate([
+    let aggregation = [
       { $addFields: { clientIdConverted: { $toObjectId: '$clientId' } } },
       {
         $lookup: {
@@ -64,11 +59,12 @@ export class NotesService {
       { $addFields: { "fullNameInv": { $concat: ["$client.lastName", " ", "$client.name"] } } },
       { $addFields: { "phone": '$client.phone' } },
       { $addFields: { "company": '$client.company' } },
+      { $addFields: { "debt": {$subtract: [{$subtract: [{ $sum: '$orders.price' }, {$sum: "$advances.advance"}]}, "$discount"]} } },
       {
         $match: {
           $and: [
             filter,
-            {complete: complete}
+            { complete: complete }
           ]
         }
       },
@@ -83,7 +79,15 @@ export class NotesService {
         }
 
       }
-    ])
+    ]
+
+    const paginateOptions = {
+      page: page || 1,
+      limit: limit || 10,
+      sort: sort || '-updatedAt'
+    }
+
+    let notes = this.noteModel.aggregate(aggregation)
 
     let paginatedNotes = this.paginateModel.aggregatePaginate(notes, paginateOptions)
 
@@ -99,9 +103,9 @@ export class NotesService {
   }
 
   async complete(id: string) {
-    const complete = await this.noteModel.findByIdAndUpdate(id, [{$set: {complete: true}}], {new: true})
-    
-    if(!complete){
+    const complete = await this.noteModel.findByIdAndUpdate(id, [{ $set: { complete: true } }], { new: true })
+
+    if (!complete) {
       throw new BadRequestException({ hasError: true, message: `note with id:'${id}' not found` })
     }
 
@@ -109,7 +113,7 @@ export class NotesService {
   }
 
   async update(id: string) {
-    return { hasError: true, message: "cant update notes"};
+    return { hasError: true, message: "cant update notes" };
   }
 
   async remove(id: string) {

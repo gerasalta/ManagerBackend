@@ -54,17 +54,41 @@ export class AdvancesService {
 
   async update(id: string, updateAdvanceDto: UpdateAdvanceDto) {
 
-    const data = await this.noteModel.findOneAndUpdate(
-      { _id: id },
-      { $push: { advances: updateAdvanceDto } },
-      { new: true }
-    )
+    const balance = await this.noteModel.aggregate([
+      { $addFields: { convertedId: { $toString: '$_id' } } },
+      { $match: { convertedId: id } },
+      { $addFields: { "debt": { $subtract: [{ $subtract: [{ $sum: '$orders.price' }, { $sum: "$advances.advance" }] }, "$discount"] } } }
+    ])
 
-    if (!data) {
+
+
+    if (balance.length < 1) {
+
       throw new BadRequestException({ hasError: true, message: `note with id:'${id}' not found` })
+
     }
 
-    return { hasError: false, message: "advances has been added successfully", data: data };
+    else {
+
+      if (updateAdvanceDto.advance <= balance[0].debt) {
+
+        const data = await this.noteModel.findOneAndUpdate(
+          { _id: id },
+          { $push: { advances: updateAdvanceDto } },
+          { new: true }
+        )
+
+        return { hasError: false, message: "advance has been updated successfully", data: data }
+      }
+
+      else {
+
+        throw new BadRequestException({ hasError: true, message: `advance must be smaller than balance` })
+
+      }
+
+    }
+
   }
 
   async remove(id: string) {
