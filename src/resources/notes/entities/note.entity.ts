@@ -32,7 +32,7 @@ export class Note extends Document{
         required: true,
         type: String
     })
-    manager: string
+    managerId: string
 
     @Prop({
         type: [OrdersSchema],

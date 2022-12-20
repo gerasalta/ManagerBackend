@@ -10,6 +10,7 @@ import { CommonModule } from './common/common.module';
 import { NotesModule } from './resources/notes/notes.module';
 import { OrdersModule } from './resources/orders/orders.module';
 import { AdvancesModule } from './resources/advances/advances.module';
+import { ManagersModule } from './resources/managers/managers.module';
 
 @Module({
   imports: [
@@ -21,7 +22,8 @@ import { AdvancesModule } from './resources/advances/advances.module';
     CommonModule,
     NotesModule,
     OrdersModule,
-    AdvancesModule
+    AdvancesModule,
+    ManagersModule
   ],
   controllers: [AppController],
   providers: [AppService],

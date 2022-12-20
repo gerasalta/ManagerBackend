@@ -1,6 +1,7 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, AggregatePaginateModel } from 'mongoose';
+import { Manager } from '../managers/entities/manager.entity';
 import { CreateNoteDto } from './dto/create-note.dto';
 import { UpdateNoteDto } from './dto/update-note.dto';
 import { Note } from './entities/note.entity';
@@ -44,6 +45,7 @@ export class NotesService {
 
     let aggregation = [
       { $addFields: { clientIdConverted: { $toObjectId: '$clientId' } } },
+      { $addFields: { managerConverted: { $toObjectId: '$managerId' }} },
       {
         $lookup: {
           from: "clients",
@@ -53,7 +55,18 @@ export class NotesService {
         }
       },
       {
+        $lookup: {
+          from: "managers",
+          localField: "managerConverted",
+          foreignField: "_id",
+          as: "manager"
+        }
+      },
+      {
         $unwind: "$client"
+      },
+      {
+        $unwind: "$manager"
       },
       { $addFields: { "fullName": { $concat: ["$client.name", " ", "client.$lastName"] } } },
       { $addFields: { "fullNameInv": { $concat: ["$client.lastName", " ", "$client.name"] } } },
@@ -71,6 +84,8 @@ export class NotesService {
       {
         $project: {
           clientId: 0,
+          managerId: 0,
+          managerConverted: 0,
           clientIdConverted: 0,
           fullNameInv: 0,
           fullName: 0,

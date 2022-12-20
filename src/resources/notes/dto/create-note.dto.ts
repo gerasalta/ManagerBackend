@@ -42,6 +42,6 @@ export class CreateNoteDto {
     term: Date
 
     @IsString()
-    manager: string
+    managerId: string
 
 }
