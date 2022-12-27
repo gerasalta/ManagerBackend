@@ -13,7 +13,7 @@ export class PaginationDto{
     @IsOptional()
     @IsPositive()
     @Min(1)
-    page: number;
+    pageIndex: number;
 
     @IsString()
     @IsOptional()

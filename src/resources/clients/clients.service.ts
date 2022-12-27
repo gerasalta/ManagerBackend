@@ -31,11 +31,11 @@ export class ClientsService {
 
   findAll(queryParameters) {
     let filter = {}
-    const { keyword, limit, sort, page } = queryParameters
+    const { keyword, limit, sort, pageIndex } = queryParameters
     const regex = `${keyword}.*`
     const regexOptions = 'i'
     const paginateOptions = {
-      page: page || 1,
+      page: pageIndex || 1,
       limit: limit || 10,
       sort: sort || '-updatedAt'
     }
