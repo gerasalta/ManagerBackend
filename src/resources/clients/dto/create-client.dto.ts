@@ -4,11 +4,9 @@ import { IsOptional, MinLength, IsInt, IsPositive, IsString } from "class-valida
 
 export class CreateClientDto {
     
-    @MinLength(3)
     @IsString()
     name: string;
     
-    @MinLength(3)
     @IsString()
     lastName: string;
     
@@ -18,11 +16,9 @@ export class CreateClientDto {
     
     @IsOptional()
     @IsString()
-    @MinLength(3)
     address: string;
     
     @IsOptional()
-    @MinLength(1)
     @IsString()
     company: string;
 

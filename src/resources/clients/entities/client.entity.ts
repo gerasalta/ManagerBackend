@@ -5,12 +5,11 @@ const aggregatePaginate = require('mongoose-aggregate-paginate-v2');
 @Schema({timestamps: true})
 export class Client extends Document {
     @Prop({
-        minlength: 3,
     })
     name: string;
 
     @Prop({
-        minlength: 3  
+
     })
     lastName: string;
 
@@ -25,7 +24,6 @@ export class Client extends Document {
     address: string;
 
     @Prop({
-
         default: 'none'
     })
     company: string;

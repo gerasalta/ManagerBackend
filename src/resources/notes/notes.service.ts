@@ -28,7 +28,7 @@ export class NotesService {
 
   async findAll(queryParameters) {
     let filter = {}
-    const { keyword, limit, sort, page } = queryParameters
+    const { keyword, limit, sort, pageIndex } = queryParameters
     const complete = queryParameters.complete || false
     const regex = `${keyword}.*`
     const regexOptions = 'i'
@@ -68,7 +68,8 @@ export class NotesService {
       {
         $unwind: "$manager"
       },
-      { $addFields: { "fullName": { $concat: ["$client.name", " ", "client.$lastName"] } } },
+      { $addFields: { "managerName": "$manager.manager"} },
+      { $addFields: { "fullName": { $concat: ["$client.name", " ", "$client.lastName"] } } },
       { $addFields: { "fullNameInv": { $concat: ["$client.lastName", " ", "$client.name"] } } },
       { $addFields: { "phone": '$client.phone' } },
       { $addFields: { "company": '$client.company' } },
@@ -83,21 +84,20 @@ export class NotesService {
       },
       {
         $project: {
-          clientId: 0,
           managerId: 0,
+          clientId: 0,
           managerConverted: 0,
           clientIdConverted: 0,
-          fullNameInv: 0,
-          fullName: 0,
           phone: 0,
-          company: 0
+          manager: 0,
+          fullNameInvert: 0,
         }
 
       }
     ]
 
     const paginateOptions = {
-      page: page || 1,
+      page: pageIndex || 1,
       limit: limit || 10,
       sort: sort || '-updatedAt'
     }
