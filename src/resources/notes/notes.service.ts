@@ -1,9 +1,7 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, AggregatePaginateModel } from 'mongoose';
-import { Manager } from '../managers/entities/manager.entity';
 import { CreateNoteDto } from './dto/create-note.dto';
-import { UpdateNoteDto } from './dto/update-note.dto';
 import { Note } from './entities/note.entity';
 
 @Injectable()
