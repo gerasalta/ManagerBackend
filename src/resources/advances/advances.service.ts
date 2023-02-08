@@ -48,7 +48,7 @@ export class AdvancesService {
       throw new BadRequestException({ hasError: true, message: `advance with id:'${id}' not found` })
     }
 
-    return { hasError: false, message: "advances has been found successfully", data: data };
+    return { hasError: false, message: "advances has been found successfully", data: data[0] };
 
   }
 
