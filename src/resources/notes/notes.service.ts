@@ -71,7 +71,7 @@ export class NotesService {
       { $addFields: { "fullNameInv": { $concat: ["$client.lastName", " ", "$client.name"] } } },
       { $addFields: { "phone": '$client.phone' } },
       { $addFields: { "company": '$client.company' } },
-      { $addFields: { "debt": {$subtract: [{$subtract: [{ $sum: '$orders.price' }, {$sum: "$advances.advance"}]}, "$discount"]} } },
+      { $addFields: { "debt": {$subtract: [{$subtract: [{ $sum: '$orders.price' }, {$multiply: [{$divide: [{ $sum: '$orders.price' }, 100]}, '$discount']}]}, {$sum: "$advances.advance"}]} } },
       {
         $match: {
           $and: [

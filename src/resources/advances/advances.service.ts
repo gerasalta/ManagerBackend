@@ -27,7 +27,7 @@ export class AdvancesService {
       { $addFields: { advanceIdConverted: { $toString: '$_id' } } },
       { $match: { advanceIdConverted: id } },
       { $addFields: { subtotal: { $sum: '$orders.price' } } },
-      { $addFields: { total: { $subtract: ['$subtotal', '$discount'] } } },
+      { $addFields: { total: { $subtract: ['$subtotal', {$multiply: [{$divide: ['$subtotal', 100]}, '$discount']}] } } },
       { $addFields: { totalAdvances: { $sum: '$advances.advance' } } },
       { $addFields: { balance: { $subtract: ['$total', '$totalAdvances'] } } },
       {

@@ -26,7 +26,7 @@ export class OrdersService {
     if (!data) {
       throw new BadRequestException({ hasError: true, message: `order with id:'${id}' not found` })
     }
-    return { hasError: false, message: "order has been deleted successfully", orders: data.orders };
+    return { hasError: false, message: "order has been found successfully", orders: data.orders };
   }
 
   update( ) {
