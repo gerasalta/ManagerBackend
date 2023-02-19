@@ -36,7 +36,7 @@ export class OrdersService {
   async remove(id: string) {
     const data = await this.noteModel.findOneAndUpdate(
       { 'orders._id': id },
-      { $pull: { orders: { _id: id } } },
+      { $pull: { orders: { _id: id } }, $set: {discount: 0}},
       { new: true }
     )
 
