@@ -11,6 +11,7 @@ import { NotesModule } from './resources/notes/notes.module';
 import { OrdersModule } from './resources/orders/orders.module';
 import { AdvancesModule } from './resources/advances/advances.module';
 import { ManagersModule } from './resources/managers/managers.module';
+import { TasksModule } from './resources/tasks/tasks.module';
 
 @Module({
   imports: [
@@ -23,7 +24,8 @@ import { ManagersModule } from './resources/managers/managers.module';
     NotesModule,
     OrdersModule,
     AdvancesModule,
-    ManagersModule
+    ManagersModule,
+    TasksModule
   ],
   controllers: [AppController],
   providers: [AppService],
