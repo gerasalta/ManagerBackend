@@ -13,7 +13,7 @@ export class TasksService {
     private readonly taskModel: Model<Task>,
     @InjectModel(Task.name)
     private readonly paginationModel: AggregatePaginateModel<Task>
-  ){}
+  ) { }
 
   async create(createTaskDto: CreateTaskDto) {
     try {
@@ -31,7 +31,7 @@ export class TasksService {
   async findAll(queryParameters) {
 
     let filter = {}
-    let {limit, pageIndex, sort, keyword} = queryParameters;
+    let { limit, pageIndex, sort, keyword } = queryParameters;
     const regex = `${keyword}.*`
     const regexOptions = 'i'
 
@@ -50,7 +50,24 @@ export class TasksService {
     }
 
     let tasks = this.paginationModel.aggregate([
-       { $match: { $and: [filter] } }
+      { $match: { $and: [filter] } },
+      { $addFields: { managerIdConverted: { $toObjectId: '$managerId' } } },
+      {
+        $lookup: {
+          from: "managers",
+          localField: "managerIdConverted",
+          foreignField: "_id",
+          as: "name"
+        }
+      },
+      {$addFields: {manager: '$name.manager'}},
+      {$unwind: '$manager'},
+      {
+        $project: {
+          managerIdConverted: 0,
+          name: 0
+        }
+      }
     ])
 
     let paginatedTasks = this.paginationModel.aggregatePaginate(tasks, paginateOptions)
@@ -67,15 +84,15 @@ export class TasksService {
   }
 
   async update(id: string, updateTaskDto: UpdateTaskDto) {
-    const task = await this.taskModel.findByIdAndUpdate(id, updateTaskDto, {new: true})
+    const task = await this.taskModel.findByIdAndUpdate(id, updateTaskDto, { new: true })
     return { hasError: false, message: "task has been updated successfully", data: task };
   }
 
   async remove(id: string) {
     const client = await this.taskModel.findByIdAndDelete(id)
-    if(!client){
-      throw new BadRequestException({hasError: true, message: `task with id:'${id}' not found`})
+    if (!client) {
+      throw new BadRequestException({ hasError: true, message: `task with id:'${id}' not found` })
     }
-    return {hasError: false, message: "task has been removed successfully"}
+    return { hasError: false, message: "task has been removed successfully" }
   }
 }
