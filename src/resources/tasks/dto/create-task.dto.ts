@@ -3,7 +3,7 @@ import { IsOptional, IsString } from "class-validator";
 export class CreateTaskDto {
 
     @IsString()
-    manager: string;
+    managerId: string;
 
     @IsString()
     description: string;

@@ -7,7 +7,7 @@ const aggregatePaginate = require('mongoose-aggregate-paginate-v2');
 export class Task extends Document {
 
     @Prop({})
-    manager: string;
+    managerId: string;
 
     @Prop({})
     description: string;
