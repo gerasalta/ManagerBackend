@@ -66,8 +66,9 @@ export class TasksService {
     return { hasError: false, message: "task has been found successfully", data: task };
   }
 
-  update(id: number, updateTaskDto: UpdateTaskDto) {
-    return `This action updates a #${id} task`;
+  async update(id: string, updateTaskDto: UpdateTaskDto) {
+    const task = await this.taskModel.findByIdAndUpdate(id, updateTaskDto, {new: true})
+    return { hasError: false, message: "task has been updated successfully", data: task };
   }
 
   async remove(id: string) {
