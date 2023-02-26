@@ -38,7 +38,9 @@ export class TasksService {
     if (keyword) {
       filter = {
         $or: [
-          { manager: { $regex: regex, $options: regexOptions } }
+          { manager: { $regex: regex, $options: regexOptions } },
+          { description: { $regex: regex, $options: regexOptions } },
+          { reference: { $regex: regex, $options: regexOptions } }
         ]
       }
     }
@@ -46,11 +48,10 @@ export class TasksService {
     const paginateOptions = {
       page: pageIndex || 1,
       limit: limit || 10,
-      sort: sort || '-updatedAt'
+      sort: sort || '-createdAt'
     }
 
     let tasks = this.paginationModel.aggregate([
-      { $match: { $and: [filter] } },
       { $addFields: { managerIdConverted: { $toObjectId: '$managerId' } } },
       {
         $lookup: {
@@ -62,6 +63,7 @@ export class TasksService {
       },
       {$addFields: {manager: '$name.manager'}},
       {$unwind: '$manager'},
+      { $match: { $and: [filter] } },
       {
         $project: {
           managerIdConverted: 0,
