@@ -12,6 +12,8 @@ import { OrdersModule } from './resources/orders/orders.module';
 import { AdvancesModule } from './resources/advances/advances.module';
 import { ManagersModule } from './resources/managers/managers.module';
 import { TasksModule } from './resources/tasks/tasks.module';
+import { LoginModule } from './resources/auth/login/login.module';
+import { SignupModule } from './resources/auth/signup/signup.module';
 
 @Module({
   imports: [
@@ -25,7 +27,9 @@ import { TasksModule } from './resources/tasks/tasks.module';
     OrdersModule,
     AdvancesModule,
     ManagersModule,
-    TasksModule
+    TasksModule,
+    LoginModule,
+    SignupModule
   ],
   controllers: [AppController],
   providers: [AppService],
