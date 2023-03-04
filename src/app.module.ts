@@ -13,13 +13,14 @@ import { AdvancesModule } from './resources/advances/advances.module';
 import { ManagersModule } from './resources/managers/managers.module';
 import { TasksModule } from './resources/tasks/tasks.module';
 import { LoginModule } from './resources/auth/login/login.module';
-import { SignupModule } from './resources/auth/signup/signup.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'public'),
     }),
+    ConfigModule.forRoot({}),
     MongooseModule.forRoot('mongodb+srv://fcgrafica:alvarado1010_salta@cluster0.uhxshq1.mongodb.net/grafica?retryWrites=true&w=majority'),
     ClientsModule,
     CommonModule,
@@ -28,8 +29,7 @@ import { SignupModule } from './resources/auth/signup/signup.module';
     AdvancesModule,
     ManagersModule,
     TasksModule,
-    LoginModule,
-    SignupModule
+    LoginModule
   ],
   controllers: [AppController],
   providers: [AppService],

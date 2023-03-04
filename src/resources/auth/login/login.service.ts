@@ -1,23 +1,25 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Signup } from '../signup/entities/signup.entity';
 import { CreateLoginDto } from './dto/create-login.dto';
 import * as bcrypt from 'bcrypt';
+import { Login } from './entities/login.entity';
 
 @Injectable()
 export class LoginService {
 
   constructor(
-    @InjectModel(Signup.name)
-    private readonly loginModel: Model<Signup>
+    @InjectModel(Login.name)
+    private readonly loginModel: Model<Login>,
+    private readonly jwtService: JwtService
   ){}
 
   async login(LoginDto: CreateLoginDto) {
 
     const { username, password } = LoginDto
 
-    const login = await this.loginModel.findOne({username: username})
+    const login = await this.loginModel.findOne({username})
 
     if(!login){
       throw new BadRequestException({hasError: true, message: 'user not found'})
@@ -29,7 +31,32 @@ export class LoginService {
       throw new BadRequestException({hasError: true, message: 'wrong password'})
     }
 
-    return {hasError: false, message: 'login success'};
+    return {hasError: false, message: 'login success', token: this.getJwt({username})};
+  }
+
+  async signup(CreateSignupDto: CreateLoginDto) {
+
+    const username = CreateSignupDto.username
+    const password = bcrypt.hashSync(CreateSignupDto.password, 10)
+
+    const userCheck = await this.loginModel.findOne({username: username})
+
+    if(userCheck){
+      throw new BadRequestException('username already exist')
+    }
+
+    const signup = await this.loginModel.create({username: username, password: password})
+
+    if(!signup){
+      throw new BadRequestException({ hasError: true, message: `signup error` })
+    }
+
+    return {hasError: false, message: 'signup success'}
+
+  }
+
+  private getJwt(payload: any){
+    return this.jwtService.sign(payload)
   }
 
 }
