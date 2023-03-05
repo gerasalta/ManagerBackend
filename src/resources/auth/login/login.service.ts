@@ -31,7 +31,7 @@ export class LoginService {
       throw new BadRequestException({hasError: true, message: 'wrong password'})
     }
 
-    return {hasError: false, message: 'login success', token: this.getJwt({username})};
+    return {hasError: false, message: 'login success', access_token: this.getJwt({username})};
   }
 
   async signup(CreateSignupDto: CreateLoginDto) {
