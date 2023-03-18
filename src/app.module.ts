@@ -17,11 +17,11 @@ import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({}),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'public'),
     }),
-    ConfigModule.forRoot({}),
-    MongooseModule.forRoot('mongodb+srv://fcgrafica:alvarado1010_salta@cluster0.uhxshq1.mongodb.net/grafica?retryWrites=true&w=majority'),
+    MongooseModule.forRoot(process.env.MONGO_DB),
     ClientsModule,
     CommonModule,
     NotesModule,
@@ -34,4 +34,8 @@ import { ConfigModule } from '@nestjs/config';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule { 
+
+  constructor(){}
+  
+}
