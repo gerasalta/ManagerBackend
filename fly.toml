@@ -8,6 +8,7 @@ processes = []
 
 [env]
   PORT = "8080"
+  MONGO_DB = "mongodb+srv://fcgrafica:alvarado1010_salta@cluster0.uhxshq1.mongodb.net/grafica?retryWrites=true&w=majority"
 
 [experimental]
   auto_rollback = true
