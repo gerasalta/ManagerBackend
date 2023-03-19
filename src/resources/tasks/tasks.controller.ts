@@ -5,7 +5,7 @@ import { UpdateTaskDto } from './dto/update-task.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { ParseMongoIdPipe } from 'src/common/pipes/parse-mongo-id.pipe';
 
-@Controller('tasks')
+@Controller()
 export class TasksController {
   constructor(private readonly tasksService: TasksService) {}
 
