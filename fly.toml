@@ -9,6 +9,7 @@ processes = []
 [env]
   PORT = "8080"
   MONGO_DB = "mongodb+srv://fcgrafica:alvarado1010_salta@cluster0.uhxshq1.mongodb.net/grafica?retryWrites=true&w=majority"
+  JWT_SECRET = "PuuZIMGo7f2opceH0s5nsSozp2LZrw9G"
 
 [experimental]
   auto_rollback = true
